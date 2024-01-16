@@ -1,5 +1,28 @@
 <script setup>
+import { useForm, useField } from 'vee-validate'
+import { validationSchema, imageSchema } from '../../validation/propertySchema'
+
 const items = [1, 2, 3, 4, 5]
+
+const { handleSubmit } = useForm({
+  validationSchema: {
+    ...validationSchema,
+    ...imageSchema,
+  }
+})
+
+const title = useField('title')
+const image = useField('image')
+const price = useField('price')
+const rooms = useField('rooms')
+const bathrooms = useField('bathrooms')
+const parkings = useField('parkings')
+const description = useField('description')
+const pool = useField('pool')
+
+const submit = handleSubmit((values) => {
+  console.log(values)
+})
 </script>
 
 <template>
@@ -16,6 +39,8 @@ const items = [1, 2, 3, 4, 5]
       <v-text-field 
         class="mb-5"
         label="Property Title"
+        v-model="title.value.value"
+        :error-messages="title.errorMessage.value"
       />
 
       <v-file-input 
@@ -23,11 +48,15 @@ const items = [1, 2, 3, 4, 5]
         accept="image/jpeg"
         label="Photo"
         prepend-icon="mdi-camera"
+        v-model="image.value.value"
+        :error-messages="image.errorMessage.value"
       />
 
       <v-text-field 
         class="mb-5"
         label="Price"
+        v-model="price.value.value"
+        :error-messages="price.errorMessage.value"
       />
       
       <v-row>
@@ -36,6 +65,8 @@ const items = [1, 2, 3, 4, 5]
           label="Rooms"
           class="mb-5"
           :items="items"
+          v-model="rooms.value.value"
+          :error-messages="rooms.errorMessage.value"
           />
         </v-col>
 
@@ -44,6 +75,8 @@ const items = [1, 2, 3, 4, 5]
           label="Bathrooms"
           class="mb-5"
           :items="items"
+          v-model="bathrooms.value.value"
+          :error-messages="bathrooms.errorMessage.value"
           />
         </v-col>
 
@@ -52,6 +85,7 @@ const items = [1, 2, 3, 4, 5]
           label="Parking spaces"
           class="mb-5"
           :items="[0, 1, 2, 3, 4, 5]"
+          v-model="parkings.value.value"
           />
         </v-col>
       </v-row>
@@ -59,13 +93,16 @@ const items = [1, 2, 3, 4, 5]
       <v-textarea 
         class="mb-5"
         label="Description"
+        v-model="description.value.value"
+        :error-messages="description.errorMessage.value"
       />
 
       <v-checkbox 
         label="Pool"
+        v-model="pool.value.value"
       />
 
-      <v-btn color="pink-accent-3" block>
+      <v-btn color="pink-accent-3" block @click="submit">
         Add property
       </v-btn>
     </v-form>
