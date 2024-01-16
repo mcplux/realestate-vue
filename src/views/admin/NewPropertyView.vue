@@ -1,6 +1,13 @@
 <script setup>
+import { useRouter } from 'vue-router'
 import { useForm, useField } from 'vee-validate'
+import { collection, addDoc } from 'firebase/firestore'
+import { useFirestore } from 'vuefire'
 import { validationSchema, imageSchema } from '../../validation/propertySchema'
+
+const db = useFirestore()
+
+const router = useRouter()
 
 const items = [1, 2, 3, 4, 5]
 
@@ -16,12 +23,19 @@ const image = useField('image')
 const price = useField('price')
 const rooms = useField('rooms')
 const bathrooms = useField('bathrooms')
-const parkings = useField('parkings')
+const parkings = useField('parkings', null, {initialValue: 0})
 const description = useField('description')
-const pool = useField('pool')
+const pool = useField('pool', null, {initialValue: false})
 
-const submit = handleSubmit((values) => {
-  console.log(values)
+const submit = handleSubmit(async (values) => {
+  const { image, ...property } = values
+
+  const docRef = await addDoc(collection(db, "properties"), {
+    ...property,
+  });
+  if(docRef.id) {
+    router.push({name: "admin-properties"})
+  }
 })
 </script>
 
