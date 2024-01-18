@@ -3,11 +3,13 @@ import { useRouter } from 'vue-router'
 import { useForm, useField } from 'vee-validate'
 import { collection, addDoc } from 'firebase/firestore'
 import { useFirestore } from 'vuefire'
+import useImage from '../../composables/useImage'
 import { validationSchema, imageSchema } from '../../validation/propertySchema'
 
 const db = useFirestore()
 
 const router = useRouter()
+const { url, uploadImage, imageServer } = useImage()
 
 const items = [1, 2, 3, 4, 5]
 
@@ -32,6 +34,7 @@ const submit = handleSubmit(async (values) => {
 
   const docRef = await addDoc(collection(db, "properties"), {
     ...property,
+    image: url.value,
   });
   if(docRef.id) {
     router.push({name: "admin-properties"})
@@ -64,7 +67,13 @@ const submit = handleSubmit(async (values) => {
         prepend-icon="mdi-camera"
         v-model="image.value.value"
         :error-messages="image.errorMessage.value"
+        @change="uploadImage"
       />
+
+      <div v-if="imageServer" class="my-5">
+        <p class="font-weight-bold">Image: </p>
+        <img class="w-50" :src="imageServer" alt="Property Image">
+      </div>
 
       <v-text-field 
         class="mb-5"
