@@ -2,7 +2,7 @@
 import useProperties from '../../composables/useProperties'
 import { formatPrice } from '../../helpers'
 
-const { propertiesCollection } = useProperties()
+const { propertiesCollection, deleteProperty } = useProperties()
 </script>
 
 <template>
@@ -31,7 +31,7 @@ const { propertiesCollection } = useProperties()
           <v-btn color="info" flat class="mr-2" :to="{name: 'edit-property', params: {id: property.id}}">
             Edit
           </v-btn>
-          <v-btn color="red-darken-3" flat>
+          <v-btn color="red-darken-3" flat @click="deleteProperty(property.id, property.image)">
             Delete
           </v-btn>
         </template>
