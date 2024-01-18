@@ -1,8 +1,9 @@
 <script setup>
 import useProperties from '../composables/useProperties'
 import Property from '../components/Property.vue'
+import { formatPrice } from '../helpers'
 
-const { propertiesCollection, formatPrice } = useProperties()
+const { propertiesCollection } = useProperties()
 </script>
 
 <template>

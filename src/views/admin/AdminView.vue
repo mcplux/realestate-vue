@@ -1,7 +1,8 @@
 <script setup>
-import useProperties from '../../composables/useProperties';
+import useProperties from '../../composables/useProperties'
+import { formatPrice } from '../../helpers'
 
-const { propertiesCollection, formatPrice } = useProperties()
+const { propertiesCollection } = useProperties()
 </script>
 
 <template>
