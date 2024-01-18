@@ -1,15 +1,19 @@
 <script setup>
+import 'leaflet/dist/leaflet.css'
+
 import { useRouter } from 'vue-router'
 import { useForm, useField } from 'vee-validate'
 import { collection, addDoc } from 'firebase/firestore'
 import { useFirestore } from 'vuefire'
+import { LMap, LTileLayer, LMarker } from '@vue-leaflet/vue-leaflet'
 import useImage from '../../composables/useImage'
+import useLocationMap from '../../composables/useLocationMap'
 import { validationSchema, imageSchema } from '../../validation/propertySchema'
 
 const db = useFirestore()
-
 const router = useRouter()
 const { url, uploadImage, imageServer } = useImage()
+const { zoom, center, pin } = useLocationMap()
 
 const items = [1, 2, 3, 4, 5]
 
@@ -35,6 +39,7 @@ const submit = handleSubmit(async (values) => {
   const docRef = await addDoc(collection(db, "properties"), {
     ...property,
     image: url.value,
+    location: center.value,
   });
   if(docRef.id) {
     router.push({name: "admin-properties"})
@@ -124,6 +129,21 @@ const submit = handleSubmit(async (values) => {
         label="Pool"
         v-model="pool.value.value"
       />
+
+      <h2 class="font-weight-bold text-center my-5">Location</h2>
+
+      <div class="pb-10">
+        <div style="height:600px">
+          <LMap v-model:zoom="zoom" :center="center" :use-global-leaflet="false">
+            <LMarker 
+              :lat-lng="center"
+              draggable
+              @moveend="pin"
+            />
+            <LTileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"></LTileLayer>
+          </LMap>
+        </div>
+      </div>
 
       <v-btn color="pink-accent-3" block @click="submit">
         Add property
